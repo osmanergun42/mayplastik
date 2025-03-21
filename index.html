@@ -258,6 +258,11 @@ td {
             orders.push(order);
             localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
 
+            addOrderToTable(order);
+            document.getElementById('orderForm').reset();
+        });
+
+        function addOrderToTable(order) {
             var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
             var newRow = table.insertRow();
 
@@ -267,14 +272,17 @@ td {
             var cell4 = newRow.insertCell(3);
             var cell5 = newRow.insertCell(4);
 
-            cell1.textContent = customerName;
-            cell2.textContent = product;
-            cell3.textContent = quantity;
-            cell4.textContent = totalWeight.toFixed(2);
-            cell5.textContent = orderDate;
+            cell1.textContent = order.customerName;
+            cell2.textContent = order.product;
+            cell3.textContent = order.quantity;
+            cell4.textContent = order.totalWeight.toFixed(2);
+            cell5.textContent = order.date;
+        }
 
-            document.getElementById('orderForm').reset();
-        });
+        function loadOrders() {
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            orders.forEach(addOrderToTable);
+        }
 
         function loadCustomers() {
             var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
@@ -301,6 +309,7 @@ td {
             });
 
             loadCustomers();
+            loadOrders();
         };
     </script>
 </body>
