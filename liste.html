@@ -168,6 +168,72 @@ td {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
+.select-btn, .delete-btn, .copy-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+.select-btn:hover, .delete-btn:hover, .copy-btn:hover {
+    background: #555;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.modal-header h2 {
+    margin: 0;
+}
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+.modal-footer button {
+    margin-left: 10px;
+}
     </style>
 </head>
 <body>
@@ -204,13 +270,34 @@ td {
                     <th>Miktar</th>
                     <th>Toplam Ağırlık (kg)</th>
                     <th>Sipariş Tarihi</th>
+                    <th>Seç</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Siparişler burada görünecek -->
             </tbody>
         </table>
+        <button class="delete-btn" onclick="openModal()">Seçili Siparişleri Sil</button>
+        <button class="copy-btn" onclick="copySelectedOrders()">Seçili Siparişleri Kopyala</button>
     </div>
+
+    <!-- Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Onay</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Seçili siparişleri silmek istediğinize emin misiniz?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()">İptal</button>
+                <button onclick="deleteSelectedOrders()">Sil</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function loadOrders() {
             var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
@@ -218,7 +305,7 @@ td {
 
             ordersTable.innerHTML = '';
 
-            orders.forEach(function(order) {
+            orders.forEach(function(order, index) {
                 var newRow = ordersTable.insertRow();
 
                 var cell1 = newRow.insertCell(0);
@@ -226,12 +313,18 @@ td {
                 var cell3 = newRow.insertCell(2);
                 var cell4 = newRow.insertCell(3);
                 var cell5 = newRow.insertCell(4);
+                var cell6 = newRow.insertCell(5);
 
                 cell1.textContent = order.customerName;
                 cell2.textContent = order.product;
                 cell3.textContent = order.quantity;
                 cell4.textContent = order.totalWeight.toFixed(2);
                 cell5.textContent = order.date;
+
+                var selectCheckbox = document.createElement('input');
+                selectCheckbox.type = 'checkbox';
+                selectCheckbox.value = index;
+                cell6.appendChild(selectCheckbox);
             });
         }
 
@@ -258,7 +351,7 @@ td {
             var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
             ordersTable.innerHTML = '';
 
-            filteredOrders.forEach(function(order) {
+            filteredOrders.forEach(function(order, index) {
                 var newRow = ordersTable.insertRow();
 
                 var cell1 = newRow.insertCell(0);
@@ -266,12 +359,18 @@ td {
                 var cell3 = newRow.insertCell(2);
                 var cell4 = newRow.insertCell(3);
                 var cell5 = newRow.insertCell(4);
+                var cell6 = newRow.insertCell(5);
 
                 cell1.textContent = order.customerName;
                 cell2.textContent = order.product;
                 cell3.textContent = order.quantity;
                 cell4.textContent = order.totalWeight.toFixed(2);
                 cell5.textContent = order.date;
+
+                var selectCheckbox = document.createElement('input');
+                selectCheckbox.type = 'checkbox';
+                selectCheckbox.value = index;
+                cell6.appendChild(selectCheckbox);
             });
         }
 
@@ -293,6 +392,48 @@ td {
                 option.value = product.name;
                 option.textContent = product.name;
                 productDropdown.appendChild(option);
+            });
+        }
+
+        function openModal() {
+            var modal = document.getElementById('deleteModal');
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('deleteModal');
+            modal.style.display = 'none';
+        }
+
+        function deleteSelectedOrders() {
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+            var checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
+
+            checkboxes.forEach(function(checkbox) {
+                orders.splice(checkbox.value, 1);
+            });
+
+            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+            loadOrders();
+            closeModal();
+        }
+
+        function copySelectedOrders() {
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+            var checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
+
+            var textToCopy = "";
+            checkboxes.forEach(function(checkbox) {
+                var order = orders[checkbox.value];
+                textToCopy += `${order.customerName}, ${order.product}, ${order.quantity}, ${order.totalWeight.toFixed(2)}, ${order.date}\n`;
+            });
+
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                alert('Seçili siparişler kopyalandı.');
+            }, function(err) {
+                alert('Kopyalama başarısız oldu: ', err);
             });
         }
 
