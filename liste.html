@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAY Plastik Sipariş Listesi</title>
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #333;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1;
+}
+.sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+}
+.sidebar a:hover {
+    background: #555;
+}
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background: #444;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 4px;
+}
+.openbtn:hover {
+    background: #555;
+}
+#main {
+    transition: margin-left 0.5s;
+    padding: 20px;
+    width: 100%;
+}
+header {
+    background: #444;
+    color: #fff;
+    padding: 20px 0;
+    border-bottom: #222 3px solid;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+form {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+form div {
+    margin-bottom: 15px;
+}
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+form input[type="text"], form input[type="number"], form select, form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+    border-color: #444;
+    outline: none;
+}
+form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+form button:hover {
+    background: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background: #444;
+    color: white;
+    font-weight: bold;
+}
+td {
+    background: #f9f9f9;
+}
+.add-product, .add-customer {
+    display: block;
+    width: calc(50% - 20px);
+    padding: 15px;
+    background: #444;
+    color: #fff;
+    border: none;
+    text-align: center;
+    margin: 20px 10px 0 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+.add-product:hover, .add-customer:hover {
+    background: #555;
+}
+.product-list {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MAY Plastik Sipariş Listesi</h1>
+    </header>
+    <div class="container">
+        <form class="filter-form" id="filterForm">
+            <div>
+                <label for="customerName">Müşteri Adı</label>
+                <select id="customerName">
+                    <option value="">Hepsi</option>
+                    <!-- Müşteriler burada dropdown menüde görünecek -->
+                </select>
+            </div>
+            <div>
+                <label for="productName">Ürün Adı</label>
+                <select id="productName">
+                    <option value="">Hepsi</option>
+                    <!-- Ürünler burada dropdown menüde görünecek -->
+                </select>
+            </div>
+            <div>
+                <label for="orderDate">Sipariş Tarihi</label>
+                <input type="date" id="orderDate">
+            </div>
+            <button type="button" onclick="filterOrders()">Filtrele</button>
+        </form>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Müşteri Adı</th>
+                    <th>Ürün</th>
+                    <th>Miktar</th>
+                    <th>Toplam Ağırlık (kg)</th>
+                    <th>Sipariş Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Siparişler burada görünecek -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function loadOrders() {
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+
+            ordersTable.innerHTML = '';
+
+            orders.forEach(function(order) {
+                var newRow = ordersTable.insertRow();
+
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
+                var cell5 = newRow.insertCell(4);
+
+                cell1.textContent = order.customerName;
+                cell2.textContent = order.product;
+                cell3.textContent = order.quantity;
+                cell4.textContent = order.totalWeight.toFixed(2);
+                cell5.textContent = order.date;
+            });
+        }
+
+        function filterOrders() {
+            var customerName = document.getElementById('customerName').value;
+            var productName = document.getElementById('productName').value;
+            var orderDate = document.getElementById('orderDate').value;
+
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var filteredOrders = orders.filter(function(order) {
+                var isValid = true;
+                if (customerName && order.customerName !== customerName) {
+                    isValid = false;
+                }
+                if (productName && order.product !== productName) {
+                    isValid = false;
+                }
+                if (orderDate && order.date !== orderDate) {
+                    isValid = false;
+                }
+                return isValid;
+            });
+
+            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+            ordersTable.innerHTML = '';
+
+            filteredOrders.forEach(function(order) {
+                var newRow = ordersTable.insertRow();
+
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
+                var cell5 = newRow.insertCell(4);
+
+                cell1.textContent = order.customerName;
+                cell2.textContent = order.product;
+                cell3.textContent = order.quantity;
+                cell4.textContent = order.totalWeight.toFixed(2);
+                cell5.textContent = order.date;
+            });
+        }
+
+        function loadCustomersAndProducts() {
+            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
+            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+            var customerDropdown = document.getElementById('customerName');
+            var productDropdown = document.getElementById('productName');
+
+            customers.forEach(function(customer) {
+                var option = document.createElement('option');
+                option.value = customer.name;
+                option.textContent = customer.name;
+                customerDropdown.appendChild(option);
+            });
+
+            products.forEach(function(product) {
+                var option = document.createElement('option');
+                option.value = product.name;
+                option.textContent = product.name;
+                productDropdown.appendChild(option);
+            });
+        }
+
+        window.onload = function() {
+            loadOrders();
+            loadCustomersAndProducts();
+        };
+    </script>
+</body>
+</html>

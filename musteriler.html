@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAY Plastik Müşteriler</title>
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #333;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1;
+}
+.sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+}
+.sidebar a:hover {
+    background: #555;
+}
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background: #444;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 4px;
+}
+.openbtn:hover {
+    background: #555;
+}
+#main {
+    transition: margin-left 0.5s;
+    padding: 20px;
+    width: 100%;
+}
+header {
+    background: #444;
+    color: #fff;
+    padding: 20px 0;
+    border-bottom: #222 3px solid;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+form {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+form div {
+    margin-bottom: 15px;
+}
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+form input[type="text"], form input[type="number"], form select, form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+    border-color: #444;
+    outline: none;
+}
+form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+form button:hover {
+    background: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background: #444;
+    color: white;
+    font-weight: bold;
+}
+td {
+    background: #f9f9f9;
+}
+.add-product, .add-customer {
+    display: block;
+    width: calc(50% - 20px);
+    padding: 15px;
+    background: #444;
+    color: #fff;
+    border: none;
+    text-align: center;
+    margin: 20px 10px 0 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+.add-product:hover, .add-customer:hover {
+    background: #555;
+}
+.product-list {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+        .date-range {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .date-range label {
+            margin: 0 10px 0 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .date-range input[type="date"] {
+            width: 48%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        .date-range input[type="date"]:focus {
+            border-color: #d4adf0;
+            outline: none;
+        }
+        .date-range button {
+            padding: 10px 20px;
+            background: #6a0dad;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .date-range button:hover {
+            background: #5a0dad;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>MAY Plastik Müşteriler</h1>
+    </header>
+    <div class="container">
+        <form id="customerForm">
+            <label for="customerDropdown">Müşteri Seçin:</label>
+            <select id="customerDropdown" required>
+                <option value="">Müşteri Seçin</option>
+                <!-- Müşteriler burada dropdown menüde görünecek -->
+            </select>
+            <button type="button" onclick="showCustomerOrders()">Siparişleri Göster</button>
+        </form>
+        <table id="ordersTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Ürün</th>
+                    <th>Miktar</th>
+                    <th>Toplam Ağırlık (kg)</th>
+                    <th>Kayıt Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Siparişler burada görünecek -->
+            </tbody>
+        </table>
+        <div id="dateRangeForm" class="date-range" style="display: none; text-align: center;">
+            <label for="startDate">Başlangıç Tarihi:</label>
+            <input type="date" id="startDate" required>
+            <label for="endDate">Bitiş Tarihi:</label>
+            <input type="date" id="endDate" required>
+            <button type="button" onclick="downloadOrders()">İndir</button>
+        </div>
+    </div>
+    <script>
+        function loadCustomers() {
+            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
+            var customerDropdown = document.getElementById('customerDropdown');
+
+            customers.forEach(function(customer) {
+                var option = document.createElement('option');
+                option.value = customer.name;
+                option.textContent = customer.name;
+                customerDropdown.appendChild(option);
+            });
+        }
+
+        function showCustomerOrders() {
+            var customerName = document.getElementById('customerDropdown').value;
+            if (!customerName) {
+                alert('Lütfen bir müşteri seçin.');
+                return;
+            }
+
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var customerOrders = orders.filter(function(order) {
+                return order.customerName === customerName;
+            });
+
+            var ordersTable = document.getElementById('ordersTable');
+            var tbody = ordersTable.getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+
+            if (customerOrders.length === 0) {
+                alert('Bu müşteri için kayıtlı sipariş yok.');
+                ordersTable.style.display = 'none';
+                document.getElementById('dateRangeForm').style.display = 'none';
+                return;
+            }
+
+            customerOrders.forEach(function(order) {
+                var row = tbody.insertRow();
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                var cell4 = row.insertCell(3);
+
+                cell1.textContent = order.product;
+                cell2.textContent = order.quantity;
+                cell3.textContent = order.totalWeight.toFixed(2);
+                cell4.textContent = order.date;
+            });
+
+            ordersTable.style.display = '';
+            document.getElementById('dateRangeForm').style.display = '';
+        }
+
+        function downloadOrders() {
+            var customerName = document.getElementById('customerDropdown').value;
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+            if (!customerName || !startDate || !endDate) {
+                alert('Lütfen müşteri ve tarih aralığını seçin.');
+                return;
+            }
+
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var customerOrders = orders.filter(function(order) {
+                return order.customerName === customerName && order.date >= startDate && order.date <= endDate;
+            });
+
+            if (customerOrders.length === 0) {
+                alert('Bu tarih aralığında kayıtlı sipariş yok.');
+                return;
+            }
+
+            var wb = XLSX.utils.book_new();
+            var ws_data = [
+                ["Ürün", "Miktar", "Toplam Ağırlık (kg)", "Kayıt Tarihi"]
+            ];
+
+            customerOrders.forEach(function(order) {
+                ws_data.push([order.product, order.quantity, order.totalWeight.toFixed(2), order.date]);
+            });
+
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Biçimlendirme
+            var wscols = [
+                { wch: 20 }, // Ürün
+                { wch: 10 }, // Miktar
+                { wch: 20 }, // Toplam Ağırlık (kg)
+                { wch: 15 }  // Kayıt Tarihi
+            ];
+            ws['!cols'] = wscols;
+
+            XLSX.utils.book_append_sheet(wb, ws, "Siparisler");
+            XLSX.writeFile(wb, `${customerName}_siparisler_${startDate}_to_${endDate}.xlsx`);
+        }
+
+        window.onload = function() {
+            loadCustomers();
+        };
+    </script>
+</body>
+</html>

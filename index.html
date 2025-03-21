@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAY Plastik Siparişler</title>
+    <style>
+ body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #333;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1;
+}
+.sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+}
+.sidebar a:hover {
+    background: #555;
+}
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background: #444;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 4px;
+}
+.openbtn:hover {
+    background: #555;
+}
+#main {
+    transition: margin-left 0.5s;
+    padding: 20px;
+    width: 100%;
+}
+header {
+    background: #444;
+    color: #fff;
+    padding: 20px 0;
+    border-bottom: #222 3px solid;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+form {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+form div {
+    margin-bottom: 15px;
+}
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+form input[type="text"], form input[type="number"], form select, form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+    border-color: #444;
+    outline: none;
+}
+form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+form button:hover {
+    background: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background: #444;
+    color: white;
+    font-weight: bold;
+}
+td {
+    background: #f9f9f9;
+}
+.add-product, .add-customer {
+    display: block;
+    width: calc(50% - 20px);
+    padding: 15px;
+    background: #444;
+    color: #fff;
+    border: none;
+    text-align: center;
+    margin: 20px 10px 0 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+.add-product:hover, .add-customer:hover {
+    background: #555;
+}
+.product-list {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+    </style>
+</head>
+<body>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="liste.html">Liste</a>
+        <a href="musteriler.html" target="_blank">Müşteriler</a>
+    </div>
+    <button class="openbtn" onclick="openNav()">&#9776; Menü</button>
+    <div id="main">
+        <header>
+            <h1>MAY Plastik Siparişler</h1>
+        </header>
+        <form id="orderForm">
+            <div>
+                <label for="customerName">Müşteri Adı</label>
+                <select id="customerName" required>
+                    <!-- Müşteriler burada dropdown menüde görünecek -->
+                </select>
+            </div>
+            <div>
+                <label for="product">Ürün</label>
+                <select id="product" required>
+                    <!-- Ürünler burada dropdown menüde görünecek -->
+                </select>
+            </div>
+            <div>
+                <label for="quantity">Miktar</label>
+                <input type="number" id="quantity" required>
+            </div>
+            <div>
+                <label for="orderDate">Sipariş Tarihi</label>
+                <input type="date" id="orderDate" required>
+            </div>
+            <button type="submit">Siparişi Kaydet</button>
+        </form>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Müşteri Adı</th>
+                    <th>Ürün</th>
+                    <th>Miktar</th>
+                    <th>Toplam Ağırlık (kg)</th>
+                    <th>Sipariş Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Siparişler burada görünecek -->
+            </tbody>
+        </table>
+        <a href="urunler.html" class="add-product">Ürün Ekle</a>
+        <a href="musteriekle.html" class="add-customer">Müşteri Ekle</a>
+        <div id="productList" class="product-list"></div>
+    </div>
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.left = "0";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.left = "-250px";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var customerName = document.getElementById('customerName').value;
+            var productElement = document.getElementById('product');
+            var product = productElement.value;
+            var quantity = parseInt(document.getElementById('quantity').value, 10);
+            var orderDate = document.getElementById('orderDate').value;
+            
+            var productWeight = parseFloat(productElement.selectedOptions[0].getAttribute('data-weight'));
+            var totalWeight = quantity * productWeight;
+
+            var order = {
+                customerName: customerName,
+                product: product,
+                quantity: quantity,
+                totalWeight: totalWeight,
+                date: orderDate
+            };
+
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            orders.push(order);
+            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+
+            var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow();
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+            var cell5 = newRow.insertCell(4);
+
+            cell1.textContent = customerName;
+            cell2.textContent = product;
+            cell3.textContent = quantity;
+            cell4.textContent = totalWeight.toFixed(2);
+            cell5.textContent = orderDate;
+
+            document.getElementById('orderForm').reset();
+        });
+
+        function loadCustomers() {
+            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
+            var customerDropdown = document.getElementById('customerName');
+
+            customerDropdown.innerHTML = '';
+
+            customers.forEach(function(customer) {
+                var option = document.createElement('option');
+                option.textContent = customer.name;
+                customerDropdown.appendChild(option);
+            });
+        }
+
+        window.onload = function() {
+            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+            var productDropdown = document.getElementById('product');
+
+            products.forEach(function(product) {
+                var option = document.createElement('option');
+                option.textContent = product.name + ' (' + product.size + ')';
+                option.setAttribute('data-weight', product.weight);
+                productDropdown.appendChild(option);
+            });
+
+            loadCustomers();
+        };
+    </script>
+</body>
+</html>
