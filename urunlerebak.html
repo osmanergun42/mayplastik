@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürünler</title>
+    <link rel="apple-touch-icon" href="urunler.png">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .container {
+            padding: 20px;
+            margin-top: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 80%;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #444;
+            color: white;
+            font-weight: bold;
+        }
+        td {
+            background: #f9f9f9;
+        }
+        .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+            padding: 6px 12px;
+            margin-left: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .edit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+        .save-btn {
+            background: #008CBA;
+            color: white;
+        }
+        .cancel-btn {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ürünler</h1>
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Boyut</th>
+                    <th>Ağırlık (kg)</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ürünler burada görünecek -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+            var productsTable = document.getElementById('productsTable').getElementsByTagName('tbody')[0];
+
+            function loadProducts() {
+                productsTable.innerHTML = '';
+                products.forEach(function(product, index) {
+                    var row = productsTable.insertRow();
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>${product.size}</td>
+                        <td>${product.weight}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editProduct(${index})">Düzenle</button>
+                            <button class="delete-btn" onclick="deleteProduct(${index})">Sil</button>
+                        </td>
+                    `;
+                });
+            }
+
+            window.editProduct = function(index) {
+                var row = productsTable.rows[index];
+                var product = products[index];
+                row.innerHTML = `
+                    <td><input type="text" id="editName${index}" value="${product.name}"></td>
+                    <td><input type="text" id="editSize${index}" value="${product.size}"></td>
+                    <td><input type="number" id="editWeight${index}" value="${product.weight}"></td>
+                    <td>
+                        <button class="save-btn" onclick="saveProduct(${index})">Kaydet</button>
+                        <button class="cancel-btn" onclick="loadProducts()">İptal</button>
+                    </td>
+                `;
+            };
+
+            window.saveProduct = function(index) {
+                var editedName = document.getElementById(`editName${index}`).value;
+                var editedSize = document.getElementById(`editSize${index}`).value;
+                var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
+                products[index] = {
+                    name: editedName,
+                    size: editedSize,
+                    weight: editedWeight
+                };
+                localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
+                loadProducts();
+            };
+
+            window.deleteProduct = function(index) {
+                if (confirm("Bu ürünü silmek istediğinizden emin misiniz?")) {
+                    products.splice(index, 1);
+                    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
+                    loadProducts();
+                }
+            };
+
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
