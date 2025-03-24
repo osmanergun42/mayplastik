@@ -301,6 +301,8 @@ td {
         </table>
         <button class="delete-btn" onclick="openModal()">Seçili Siparişleri Sil</button>
         <button class="copy-btn" onclick="copySelectedOrders()">Seçili Siparişleri Kopyala</button>
+        <button class="copy-btn" onclick="downloadSelectedOrdersAsPDF()">Seçili Siparişleri PDF Olarak İndir</button>
+
     </div>
 
     <!-- Modal -->
@@ -374,7 +376,82 @@ td {
             const filename = `siparis_${order.customerName}_${order.date}.pdf`;
             doc.save(filename);
         }
+        function downloadSelectedOrdersAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
+    const orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    const ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+    const checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
+
+    if (checkboxes.length === 0) {
+        alert("Lutfen en az bir siparis secin.");
+        return;
+    }
+
+    function cleanText(text) {
+        return text
+            .replace(/ş/g, 's').replace(/Ş/g, 'S')
+            .replace(/ı/g, 'i').replace(/İ/g, 'I')
+            .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+            .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+            .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+            .replace(/ç/g, 'c').replace(/Ç/g, 'C');
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("MAY Plastik - Secili Siparisler", 20, 20);
+
+    // Tablo başlıkları
+    const headers = ["Musteri", "Urun", "Miktar", "Agirlik (kg)", "Tarih"];
+    const colWidths = [40, 50, 20, 30, 40];
+    let startY = 30;
+
+    // Başlık çiz
+    doc.setFillColor(200, 200, 255);
+    doc.rect(15, startY, 180, 10, 'F');
+    doc.setTextColor(0);
+    doc.setFontSize(12);
+    let x = 17;
+    headers.forEach((h, i) => {
+        doc.text(h, x, startY + 7);
+        x += colWidths[i];
+    });
+
+    startY += 12;
+
+    // Siparişleri yazdır
+    checkboxes.forEach(function (checkbox) {
+        const order = orders[checkbox.value];
+        const row = [
+            cleanText(order.customerName),
+            cleanText(order.product),
+            order.quantity.toString(),
+            order.totalWeight.toFixed(2),
+            order.date
+        ];
+
+        x = 17;
+        row.forEach((val, i) => {
+            doc.text(val, x, startY + 6);
+            x += colWidths[i];
+        });
+
+        // Satır arka planı
+        doc.setDrawColor(220);
+        doc.rect(15, startY, 180, 10);
+
+        startY += 12;
+
+        if (startY > 270) {
+            doc.addPage();
+            startY = 20;
+        }
+    });
+
+    doc.save("secili_siparisler.pdf");
+}
 
         function filterOrders() {
             var customerName = document.getElementById('customerName').value;
