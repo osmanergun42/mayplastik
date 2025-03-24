@@ -222,6 +222,8 @@ td {
                 <!-- Müşteriler burada dropdown menüde görünecek -->
             </select>
             <button type="button" onclick="showCustomerOrders()">Siparişleri Göster</button>
+            <button type="button" onclick="deleteCustomer()">Müşteriyi Sil</button>
+
         </form>
         <table id="ordersTable" style="display: none;">
             <thead>
@@ -296,6 +298,32 @@ td {
             ordersTable.style.display = '';
             document.getElementById('dateRangeForm').style.display = '';
         }
+        function deleteCustomer() {
+    var selectedName = document.getElementById('customerDropdown').value;
+    if (!selectedName) {
+        alert('Lütfen silmek için bir müşteri seçin.');
+        return;
+    }
+
+    var confirmDelete = confirm(`"${selectedName}" isimli müşteriyi silmek istediğinize emin misiniz?`);
+    if (!confirmDelete) return;
+
+    // Müşteri listesinden sil
+    var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
+    var updatedCustomers = customers.filter(c => c.name !== selectedName);
+    localStorage.setItem('ayz_plastik_customers', JSON.stringify(updatedCustomers));
+
+    // Müşteriye ait siparişleri de sil
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    var updatedOrders = orders.filter(o => o.customerName !== selectedName);
+    localStorage.setItem('ayz_plastik_orders', JSON.stringify(updatedOrders));
+
+    alert(`"${selectedName}" başarıyla silindi.`);
+    loadCustomers(); // dropdown'u güncelle
+    document.getElementById('ordersTable').style.display = 'none';
+    document.getElementById('dateRangeForm').style.display = 'none';
+}
+
 
         function downloadOrders() {
             var customerName = document.getElementById('customerDropdown').value;
