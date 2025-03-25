@@ -170,6 +170,7 @@
             border-radius: 8px;
         }
     </style>
+</head>
 <body>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -240,11 +241,11 @@
 
             var customerName = document.getElementById('customerName').value;
             var productElement = document.getElementById('product');
-            var product = productElement.value;
+            var product = productElement.options[productElement.selectedIndex].value;
             var quantity = parseInt(document.getElementById('quantity').value, 10);
             var orderDate = document.getElementById('orderDate').value;
 
-            var productWeight = parseFloat(productElement.selectedOptions[0].getAttribute('data-weight'));
+            var productWeight = parseFloat(productElement.options[productElement.selectedIndex].getAttribute('data-weight'));
             var totalWeight = quantity * productWeight;
 
             var order = {
@@ -281,65 +282,54 @@
         }
 
         function loadOrders() {
-    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-    var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-    table.innerHTML = ''; // Tabloyu temizle
+            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+            var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
 
-    orders.forEach(function(order) {
-        var product = products.find(p => p.name === order.product);
-        if (product) {
-            order.totalWeight = order.quantity * product.weight; // Güncellenmiş ağırlığı kullan
+            orders.forEach(function(order) {
+                var product = products.find(p => p.name === order.product);
+                if (product) {
+                    order.totalWeight = order.quantity * product.weight;
+                }
+                addOrderToTable(order);
+            });
+
+            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
         }
-        addOrderToTable(order);
-    });
-
-    // Güncellenmiş siparişleri tekrar kaydet
-    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-}
-
-
 
         function loadCustomers() {
             var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
             var customerDropdown = document.getElementById('customerName');
-
             customerDropdown.innerHTML = '';
 
             customers.forEach(function(customer) {
                 var option = document.createElement('option');
                 option.textContent = customer.name;
+                option.value = customer.name;
                 customerDropdown.appendChild(option);
             });
         }
 
         function loadProducts() {
-    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-    var productDropdown = document.getElementById('product');
+            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+            var productDropdown = document.getElementById('product');
+            productDropdown.innerHTML = '';
 
-    productDropdown.innerHTML = '';
-
-    products.forEach(function(product) {
-        var option = document.createElement('option');
-        option.textContent = product.name + ' (' + product.size + ')';
-        option.value = product.name;
-        option.setAttribute('data-weight', product.weight); // Güncel ağırlığı ayarla
-        productDropdown.appendChild(option);
-    });
-}
-
+            products.forEach(function(product) {
+                var option = document.createElement('option');
+                option.textContent = product.name + ' (' + product.size + ')';
+                option.value = product.name;
+                option.setAttribute('data-weight', product.weight);
+                productDropdown.appendChild(option);
+            });
+        }
 
         window.onload = function() {
-    loadProducts();
-    loadCustomers();
-    loadOrders();
-
-    // Belirli aralıklarla güncellenmesi için setInterval kullanımı
-    setInterval(loadOrders, 1000);  // Siparişleri her saniye güncelle
-    setInterval(loadCustomers, 5000); // Müşteri listesini her 5 saniyede bir güncelle
-    setInterval(loadProducts, 5000); // Ürün listesini her 5 saniyede bir güncelle
-};
-
+            loadProducts();
+            loadCustomers();
+            loadOrders();
+        };
     </script>
 </body>
 </html>
