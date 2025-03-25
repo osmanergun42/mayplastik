@@ -323,43 +323,40 @@ td {
     </div>
 
     <script>
-        function loadOrders() {
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+function loadOrders() {
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+    var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
 
-            ordersTable.innerHTML = '';
+    ordersTable.innerHTML = '';
 
-            orders.forEach(function(order, index) {
-                var newRow = ordersTable.insertRow();
-
-                var cell1 = newRow.insertCell(0);
-                var cell2 = newRow.insertCell(1);
-                var cell3 = newRow.insertCell(2);
-                var cell4 = newRow.insertCell(3);
-                var cell5 = newRow.insertCell(4);
-                var cell6 = newRow.insertCell(5);
-
-                cell1.textContent = order.customerName;
-                cell2.textContent = order.product;
-                cell3.textContent = order.quantity;
-                cell4.textContent = order.totalWeight.toFixed(2);
-                cell5.textContent = order.date;
-
-                var selectCheckbox = document.createElement('input');
-                selectCheckbox.type = 'checkbox';
-                selectCheckbox.value = index;
-                cell6.appendChild(selectCheckbox);
-                var pdfBtn = document.createElement('button');
-                pdfBtn.textContent = 'PDF';
-                pdfBtn.className = 'copy-btn';
-                pdfBtn.onclick = function () {
-                    generatePDF(order);
-                };
-                cell6.appendChild(pdfBtn);
-
-            });
-
+    orders.forEach(function(order, index) {
+        var product = products.find(p => p.name === order.product);
+        if (product) {
+            order.totalWeight = order.quantity * product.weight;
         }
+
+        var newRow = ordersTable.insertRow();
+
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+        var cell5 = newRow.insertCell(4);
+        var cell6 = newRow.insertCell(5);
+
+        cell1.textContent = order.customerName;
+        cell2.textContent = order.product;
+        cell3.textContent = order.quantity;
+        cell4.textContent = order.totalWeight.toFixed(2);
+        cell5.textContent = order.date;
+
+        var selectCheckbox = document.createElement('input');
+        selectCheckbox.type = 'checkbox';
+        selectCheckbox.value = index;
+        cell6.appendChild(selectCheckbox);
+    });
+}
         function generatePDF(order) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -453,51 +450,55 @@ td {
     doc.save("secili_siparisler.pdf");
 }
 
-        function filterOrders() {
-            var customerName = document.getElementById('customerName').value;
-            var productName = document.getElementById('productName').value;
-            var orderDate = document.getElementById('orderDate').value;
+function filterOrders() {
+    var customerName = document.getElementById('customerName').value;
+    var productName = document.getElementById('productName').value;
+    var orderDate = document.getElementById('orderDate').value;
 
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            var filteredOrders = orders.filter(function(order) {
-                var isValid = true;
-                if (customerName && order.customerName !== customerName) {
-                    isValid = false;
-                }
-                if (productName && order.product !== productName) {
-                    isValid = false;
-                }
-                if (orderDate && order.date !== orderDate) {
-                    isValid = false;
-                }
-                return isValid;
-            });
-
-            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-            ordersTable.innerHTML = '';
-
-            filteredOrders.forEach(function(order, index) {
-                var newRow = ordersTable.insertRow();
-
-                var cell1 = newRow.insertCell(0);
-                var cell2 = newRow.insertCell(1);
-                var cell3 = newRow.insertCell(2);
-                var cell4 = newRow.insertCell(3);
-                var cell5 = newRow.insertCell(4);
-                var cell6 = newRow.insertCell(5);
-
-                cell1.textContent = order.customerName;
-                cell2.textContent = order.product;
-                cell3.textContent = order.quantity;
-                cell4.textContent = order.totalWeight.toFixed(2);
-                cell5.textContent = order.date;
-
-                var selectCheckbox = document.createElement('input');
-                selectCheckbox.type = 'checkbox';
-                selectCheckbox.value = index;
-                cell6.appendChild(selectCheckbox);
-            });
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+    var filteredOrders = orders.filter(function(order) {
+        var isValid = true;
+        if (customerName && order.customerName !== customerName) {
+            isValid = false;
         }
+        if (productName && order.product !== productName) {
+            isValid = false;
+        }
+        if (orderDate && order.date !== orderDate) {
+            isValid = false;
+        }
+        return isValid;
+    });
+
+    var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+    ordersTable.innerHTML = '';
+
+    filteredOrders.forEach(function(order, index) {
+        var product = products.find(p => p.name === order.product);
+        var totalWeight = product ? order.quantity * product.weight : order.totalWeight;
+
+        var newRow = ordersTable.insertRow();
+
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+        var cell5 = newRow.insertCell(4);
+        var cell6 = newRow.insertCell(5);
+
+        cell1.textContent = order.customerName;
+        cell2.textContent = order.product;
+        cell3.textContent = order.quantity;
+        cell4.textContent = totalWeight.toFixed(2);
+        cell5.textContent = order.date;
+
+        var selectCheckbox = document.createElement('input');
+        selectCheckbox.type = 'checkbox';
+        selectCheckbox.value = index;
+        cell6.appendChild(selectCheckbox);
+    });
+}
 
         function loadCustomersAndProducts() {
             var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
