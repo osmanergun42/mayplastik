@@ -122,25 +122,102 @@
             };
 
             window.saveProduct = function(index) {
-                var editedName = document.getElementById(`editName${index}`).value;
-                var editedSize = document.getElementById(`editSize${index}`).value;
-                var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
-                products[index] = {
-                    name: editedName,
-                    size: editedSize,
-                    weight: editedWeight
-                };
-                localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
-                loadProducts();
-            };
+    var editedName = document.getElementById(`editName${index}`).value;
+    var editedSize = document.getElementById(`editSize${index}`).value;
+    var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
+    var oldName = products[index].name;
+
+    products[index] = {
+        name: editedName,
+        size: editedSize,
+        weight: editedWeight
+    };
+    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
+
+    // Siparişlerde de güncelle
+    updateOrders(oldName, editedName, editedWeight);
+
+    loadProducts();
+};
+
+function updateOrders(oldName, newName, newWeight) {
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    orders.forEach(function(order) {
+        if (order.product === oldName) {
+            order.product = newName; // Ürün adını güncelle
+            order.totalWeight = order.quantity * newWeight; // Yeni ağırlık ile güncelle
+        }
+    });
+    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+}
 
             window.deleteProduct = function(index) {
                 if (confirm("Bu ürünü silmek istediğinizden emin misiniz?")) {
-                    products.splice(index, 1);
+                    var deletedProduct = products.splice(index, 1)[0];
                     localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
+
+                    // Siparişlerden de sil
+                    removeProductFromOrders(deletedProduct.name);
+
                     loadProducts();
                 }
             };
+
+            function updateOrders(oldName, newName, newWeight) {
+                var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+                orders.forEach(function(order) {
+                    if (order.product === oldName) {
+                        order.product = newName;
+                        order.totalWeight = order.quantity * newWeight;
+                    }
+                });
+                localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+            }
+            function recalculateOrderWeights() {
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+
+    orders.forEach(function(order) {
+        var product = products.find(p => `${p.name} (${p.size})` === order.product);
+        if (product) {
+            order.totalWeight = order.quantity * product.weight;
+        }
+    });
+
+    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+}
+
+// saveProduct içinde çağır
+window.saveProduct = function(index) {
+    var editedName = document.getElementById(`editName${index}`).value;
+    var editedSize = document.getElementById(`editSize${index}`).value;
+    var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
+    var oldName = products[index].name;
+
+    products[index] = {
+        name: editedName,
+        size: editedSize,
+        weight: editedWeight
+    };
+    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
+
+    // Siparişlerde de güncelle
+    updateOrders(oldName, editedName, editedWeight);
+
+    // Siparişlerdeki ağırlıkları yeniden hesapla
+    recalculateOrderWeights();
+
+    loadProducts();
+};
+
+
+            function removeProductFromOrders(productName) {
+                var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+                var updatedOrders = orders.filter(function(order) {
+                    return order.product !== productName;
+                });
+                localStorage.setItem('ayz_plastik_orders', JSON.stringify(updatedOrders));
+            }
 
             loadProducts();
         });
