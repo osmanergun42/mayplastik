@@ -6,171 +6,170 @@
     <title>MAY Plastik Siparişler</title>
     <link rel="apple-touch-icon" href="siparis.png">
     <style>
- body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-.sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    background-color: #333;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    z-index: 1;
-}
-.sidebar a {
-    padding: 15px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    color: #fff;
-    display: block;
-    transition: 0.3s;
-}
-.sidebar a:hover {
-    background: #555;
-}
-.sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background: #444;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
-    border-radius: 4px;
-}
-.openbtn:hover {
-    background: #555;
-}
-#main {
-    transition: margin-left 0.5s;
-    padding: 20px;
-    width: 100%;
-}
-header {
-    background: #444;
-    color: #fff;
-    padding: 20px 0;
-    border-bottom: #222 3px solid;
-    text-align: center;
-}
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-form {
-    background: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-form div {
-    margin-bottom: 15px;
-}
-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #444;
-}
-form input[type="text"], form input[type="number"], form select, form input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s;
-}
-form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
-    border-color: #444;
-    outline: none;
-}
-form button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-form button:hover {
-    background: #555;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-table, th, td {
-    border: 1px solid #ddd;
-}
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-th {
-    background: #444;
-    color: white;
-    font-weight: bold;
-}
-td {
-    background: #f9f9f9;
-}
-.add-product, .add-customer {
-    display: block;
-    width: calc(50% - 20px);
-    padding: 15px;
-    background: #444;
-    color: #fff;
-    border: none;
-    text-align: center;
-    margin: 20px 10px 0 10px;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-.add-product:hover, .add-customer:hover {
-    background: #555;
-}
-.product-list {
-    margin-top: 20px;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: #333;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 1;
+        }
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: #555;
+        }
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background: #444;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            border-radius: 4px;
+        }
+        .openbtn:hover {
+            background: #555;
+        }
+        #main {
+            transition: margin-left 0.5s;
+            padding: 20px;
+            width: 100%;
+        }
+        header {
+            background: #444;
+            color: #fff;
+            padding: 20px 0;
+            border-bottom: #222 3px solid;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        form input[type="text"], form input[type="number"], form select, form input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+            border-color: #444;
+            outline: none;
+        }
+        form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #444;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        form button:hover {
+            background: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #444;
+            color: white;
+            font-weight: bold;
+        }
+        td {
+            background: #f9f9f9;
+        }
+        .add-product, .add-customer {
+            display: block;
+            width: calc(50% - 20px);
+            padding: 15px;
+            background: #444;
+            color: #fff;
+            border: none;
+            text-align: center;
+            margin: 20px 10px 0 10px;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .add-product:hover, .add-customer:hover {
+            background: #555;
+        }
+        .product-list {
+            margin-top: 20px;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
     </style>
-</head>
 <body>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -244,7 +243,7 @@ td {
             var product = productElement.value;
             var quantity = parseInt(document.getElementById('quantity').value, 10);
             var orderDate = document.getElementById('orderDate').value;
-            
+
             var productWeight = parseFloat(productElement.selectedOptions[0].getAttribute('data-weight'));
             var totalWeight = quantity * productWeight;
 
@@ -282,9 +281,24 @@ td {
         }
 
         function loadOrders() {
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            orders.forEach(addOrderToTable);
+    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
+    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+    var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+    table.innerHTML = ''; // Tabloyu temizle
+
+    orders.forEach(function(order) {
+        var product = products.find(p => p.name === order.product);
+        if (product) {
+            order.totalWeight = order.quantity * product.weight; // Güncellenmiş ağırlığı kullan
         }
+        addOrderToTable(order);
+    });
+
+    // Güncellenmiş siparişleri tekrar kaydet
+    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
+}
+
+
 
         function loadCustomers() {
             var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
@@ -299,20 +313,33 @@ td {
             });
         }
 
+        function loadProducts() {
+    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
+    var productDropdown = document.getElementById('product');
+
+    productDropdown.innerHTML = '';
+
+    products.forEach(function(product) {
+        var option = document.createElement('option');
+        option.textContent = product.name + ' (' + product.size + ')';
+        option.value = product.name;
+        option.setAttribute('data-weight', product.weight); // Güncel ağırlığı ayarla
+        productDropdown.appendChild(option);
+    });
+}
+
+
         window.onload = function() {
-            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-            var productDropdown = document.getElementById('product');
+    loadProducts();
+    loadCustomers();
+    loadOrders();
 
-            products.forEach(function(product) {
-                var option = document.createElement('option');
-                option.textContent = product.name + ' (' + product.size + ')';
-                option.setAttribute('data-weight', product.weight);
-                productDropdown.appendChild(option);
-            });
+    // Belirli aralıklarla güncellenmesi için setInterval kullanımı
+    setInterval(loadOrders, 1000);  // Siparişleri her saniye güncelle
+    setInterval(loadCustomers, 5000); // Müşteri listesini her 5 saniyede bir güncelle
+    setInterval(loadProducts, 5000); // Ürün listesini her 5 saniyede bir güncelle
+};
 
-            loadCustomers();
-            loadOrders();
-        };
     </script>
 </body>
 </html>
