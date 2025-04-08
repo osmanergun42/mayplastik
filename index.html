@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>MAY Plastik Siparişler</title>
+     <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+
+    <!-- Apple iOS ana ekran ikonu -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Android ve diğer PWA manifest -->
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Renk (Android bar rengi vs.) -->
+    <meta name="theme-color" content="#444">
+
     <link rel="apple-touch-icon" href="siparis.png">
     <style>
         body {
@@ -15,57 +27,7 @@
             flex-direction: column;
             height: 100vh;
         }
-        .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: -250px;
-            background-color: #333;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-            z-index: 1;
-        }
-        .sidebar a {
-            padding: 15px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            color: #fff;
-            display: block;
-            transition: 0.3s;
-        }
-        .sidebar a:hover {
-            background: #555;
-        }
-        .sidebar .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
-        .openbtn {
-            font-size: 20px;
-            cursor: pointer;
-            background: #444;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 2;
-            border-radius: 4px;
-        }
-        .openbtn:hover {
-            background: #555;
-        }
-        #main {
-            transition: margin-left 0.5s;
-            padding: 20px;
-            width: 100%;
-        }
+
         header {
             background: #444;
             color: #fff;
@@ -73,10 +35,42 @@
             border-bottom: #222 3px solid;
             text-align: center;
         }
+
         header h1 {
             margin: 0;
             font-size: 28px;
         }
+
+        .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-btn {
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            background: #eee;
+        }
+
+        #main {
+            padding: 20px;
+            width: 100%;
+        }
+
         form {
             background: #fff;
             padding: 20px;
@@ -84,15 +78,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
+
         form div {
             margin-bottom: 15px;
         }
+
         form label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #444;
         }
+
         form input[type="text"], form input[type="number"], form select, form input[type="date"] {
             width: 100%;
             padding: 10px;
@@ -101,10 +98,15 @@
             border-radius: 4px;
             transition: border-color 0.3s;
         }
-        form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+
+        form input[type="text"]:focus,
+        form input[type="number"]:focus,
+        form select:focus,
+        form input[type="date"]:focus {
             border-color: #444;
             outline: none;
         }
+
         form button {
             display: block;
             width: 100%;
@@ -117,9 +119,11 @@
             border-radius: 4px;
             transition: background 0.3s;
         }
+
         form button:hover {
             background: #555;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -129,21 +133,26 @@
             border-radius: 8px;
             overflow: hidden;
         }
+
         table, th, td {
             border: 1px solid #ddd;
         }
+
         th, td {
             padding: 12px;
             text-align: left;
         }
+
         th {
             background: #444;
             color: white;
             font-weight: bold;
         }
+
         td {
             background: #f9f9f9;
         }
+
         .add-product, .add-customer {
             display: block;
             width: calc(50% - 20px);
@@ -158,9 +167,11 @@
             border-radius: 4px;
             transition: background 0.3s;
         }
+
         .add-product:hover, .add-customer:hover {
             background: #555;
         }
+
         .product-list {
             margin-top: 20px;
             background: #fff;
@@ -172,41 +183,39 @@
     </style>
 </head>
 <body>
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="index.html">Ana Sayfa</a>
-        <a href="liste.html">Liste</a>
-        <a href="musteriler.html" target="_blank">Müşteriler</a>
-        <a href="urunlerebak.html">Ürünler</a>
-    </div>
-    <button class="openbtn" onclick="openNav()">&#9776; Menü</button>
+    <header>
+        <h1>MAY Plastik Siparişler</h1>
+    </header>
+    <div class="menu-buttons">
+        <a href="liste.html" class="menu-btn">📋 Liste</a>
+        <a href="musteriler.html" class="menu-btn" target="_blank">👥 Müşteriler</a>
+        <a href="urunlerebak.html" class="menu-btn">📦 Ürünler</a>
+        <a href="urunler.html" class="menu-btn">➕ Ürün Ekle</a>
+        <a href="musteriekle.html" class="menu-btn">➕ Müşteri Ekle</a>
+        <a href="istatistik.html" class="menu-btn">📊 İstatistikler</a> <!-- YENİ BUTON -->
+      </div>
+      
     <div id="main">
-        <header>
-            <h1>MAY Plastik Siparişler</h1>
-        </header>
         <form id="orderForm">
             <div>
                 <label for="customerName">Müşteri Adı</label>
-                <select id="customerName" required>
-                    <!-- Müşteriler burada dropdown menüde görünecek -->
-                </select>
+                <select id="customerName" required></select>
             </div>
             <div>
                 <label for="product">Ürün</label>
-                <select id="product" required>
-                    <!-- Ürünler burada dropdown menüde görünecek -->
-                </select>
+                <select id="product" required></select>
             </div>
             <div>
                 <label for="quantity">Miktar</label>
-                <input type="number" id="quantity" required>
+                <input type="number" id="quantity" required />
             </div>
             <div>
                 <label for="orderDate">Sipariş Tarihi</label>
-                <input type="date" id="orderDate" required>
+                <input type="date" id="orderDate" required />
             </div>
             <button type="submit">Siparişi Kaydet</button>
         </form>
+
         <table id="ordersTable">
             <thead>
                 <tr>
@@ -217,119 +226,18 @@
                     <th>Sipariş Tarihi</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Siparişler burada görünecek -->
-            </tbody>
+            <tbody></tbody>
         </table>
-        <a href="urunler.html" class="add-product">Ürün Ekle</a>
-        <a href="musteriekle.html" class="add-customer">Müşteri Ekle</a>
+
         <div id="productList" class="product-list"></div>
     </div>
-    <script>
-        function openNav() {
-            document.getElementById("mySidebar").style.left = "0";
-            document.getElementById("main").style.marginLeft = "250px";
-        }
 
-        function closeNav() {
-            document.getElementById("mySidebar").style.left = "-250px";
-            document.getElementById("main").style.marginLeft = "0";
-        }
+    <!-- Firebase App -->
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+    <!-- Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js"></script>
+    <!-- Kendi JS dosyan -->
+    <script type="module" src="index.js"></script>
 
-        document.getElementById('orderForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            var customerName = document.getElementById('customerName').value;
-            var productElement = document.getElementById('product');
-            var product = productElement.options[productElement.selectedIndex].value;
-            var quantity = parseInt(document.getElementById('quantity').value, 10);
-            var orderDate = document.getElementById('orderDate').value;
-
-            var productWeight = parseFloat(productElement.options[productElement.selectedIndex].getAttribute('data-weight'));
-            var totalWeight = quantity * productWeight;
-
-            var order = {
-                customerName: customerName,
-                product: product,
-                quantity: quantity,
-                totalWeight: totalWeight,
-                date: orderDate
-            };
-
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            orders.push(order);
-            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-
-            addOrderToTable(order);
-            document.getElementById('orderForm').reset();
-        });
-
-        function addOrderToTable(order) {
-            var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-            var newRow = table.insertRow();
-
-            var cell1 = newRow.insertCell(0);
-            var cell2 = newRow.insertCell(1);
-            var cell3 = newRow.insertCell(2);
-            var cell4 = newRow.insertCell(3);
-            var cell5 = newRow.insertCell(4);
-
-            cell1.textContent = order.customerName;
-            cell2.textContent = order.product;
-            cell3.textContent = order.quantity;
-            cell4.textContent = order.totalWeight.toFixed(2);
-            cell5.textContent = order.date;
-        }
-
-        function loadOrders() {
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-            var table = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-            table.innerHTML = '';
-
-            orders.forEach(function(order) {
-                var product = products.find(p => p.name === order.product);
-                if (product) {
-                    order.totalWeight = order.quantity * product.weight;
-                }
-                addOrderToTable(order);
-            });
-
-            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-        }
-
-        function loadCustomers() {
-            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
-            var customerDropdown = document.getElementById('customerName');
-            customerDropdown.innerHTML = '';
-
-            customers.forEach(function(customer) {
-                var option = document.createElement('option');
-                option.textContent = customer.name;
-                option.value = customer.name;
-                customerDropdown.appendChild(option);
-            });
-        }
-
-        function loadProducts() {
-            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-            var productDropdown = document.getElementById('product');
-            productDropdown.innerHTML = '';
-
-            products.forEach(function(product) {
-                var option = document.createElement('option');
-                option.textContent = product.name + ' (' + product.size + ')';
-                option.value = product.name;
-                option.setAttribute('data-weight', product.weight);
-                productDropdown.appendChild(option);
-            });
-        }
-
-        window.onload = function() {
-            loadProducts();
-            loadCustomers();
-            loadOrders();
-        };
-    </script>
 </body>
 </html>

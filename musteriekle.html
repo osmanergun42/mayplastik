@@ -1,217 +1,193 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAY Plastik Müşteri Ekle</title>
-    <style>
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-.sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    background-color: #333;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    z-index: 1;
-}
-.sidebar a {
-    padding: 15px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    color: #fff;
-    display: block;
-    transition: 0.3s;
-}
-.sidebar a:hover {
-    background: #555;
-}
-.sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background: #444;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
-    border-radius: 4px;
-}
-.openbtn:hover {
-    background: #555;
-}
-#main {
-    transition: margin-left 0.5s;
-    padding: 20px;
-    width: 100%;
-}
-header {
-    background: #444;
-    color: #fff;
-    padding: 20px 0;
-    border-bottom: #222 3px solid;
-    text-align: center;
-}
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-form {
-    background: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-form div {
-    margin-bottom: 15px;
-}
-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #444;
-}
-form input[type="text"], form input[type="number"], form select, form input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s;
-}
-form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
-    border-color: #444;
-    outline: none;
-}
-form button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-form button:hover {
-    background: #555;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-table, th, td {
-    border: 1px solid #ddd;
-}
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-th {
-    background: #444;
-    color: white;
-    font-weight: bold;
-}
-td {
-    background: #f9f9f9;
-}
-.add-product, .add-customer {
-    display: block;
-    width: calc(50% - 20px);
-    padding: 15px;
-    background: #444;
-    color: #fff;
-    border: none;
-    text-align: center;
-    margin: 20px 10px 0 10px;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-.add-product:hover, .add-customer:hover {
-    background: #555;
-}
-.product-list {
-    margin-top: 20px;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAY Plastik Müşteri Ekle</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: -250px;
+      background-color: #333;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 1;
+    }
+    .sidebar a {
+      padding: 15px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #fff;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background: #555;
+    }
+    .sidebar .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+    .openbtn {
+      font-size: 20px;
+      cursor: pointer;
+      background: #444;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      border-radius: 4px;
+    }
+    .openbtn:hover {
+      background: #555;
+    }
+    .container {
+      padding: 20px;
+      margin-top: 60px;
+    }
+    header {
+      background: #444;
+      color: #fff;
+      padding: 20px 0;
+      border-bottom: #222 3px solid;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    form div {
+      margin-bottom: 15px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #444;
+    }
+    form input[type="text"], form input[type="number"], form select, form input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+    form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
+      border-color: #444;
+      outline: none;
+    }
+    form button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    form button:hover {
+      background: #555;
+    }
+  </style>
 </head>
 <body>
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="index.html">Ana Sayfa</a>
-        <a href="liste.html">Liste</a>
-        <a href="musteriler.html">Müşteriler</a>
-    </div>
-    <button class="openbtn" onclick="openNav()">&#9776; Menü</button>
-    <div class="container">
-        <header>
-            <h1>MAY Plastik Müşteri Ekle</h1>
-        </header>
-        <form id="customerForm">
-            <div>
-                <label for="customerName">Müşteri Adı</label>
-                <input type="text" id="customerName" required>
-            </div>
-            <button type="submit">Müşteriyi Kaydet</button>
-        </form>
-    </div>
-    <script>
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "250px";
-            document.getElementById("main").style.marginLeft = "250px";
-        }
+  <div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="liste.html">Liste</a>
+    <a href="musteriler.html">Müşteriler</a>
+  </div>
+  <button class="openbtn" onclick="openNav()">&#9776; Menü</button>
+  <div class="container">
+    <header>
+      <h1>MAY Plastik Müşteri Ekle</h1>
+    </header>
+    <form id="customerForm">
+      <div>
+        <label for="customerName">Müşteri Adı</label>
+        <input type="text" id="customerName" required>
+      </div>
+      <button type="submit">Müşteriyi Kaydet</button>
+    </form>
+  </div>
 
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("main").style.marginLeft= "0";
-        }
+  <!-- Firebase SDK (app ve firestore) -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js"></script>
+  
+  <script type="module">
+    // Firebase yapılandırma bilgileri
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlaY1DIt97bCTcv2XK_Zqqp2LgAEzvlYI",
+      authDomain: "may-plastik-siparis.firebaseapp.com",
+      projectId: "may-plastik-siparis",
+      storageBucket: "may-plastik-siparis.appspot.com",
+      messagingSenderId: "550900866963",
+      appId: "1:550900866963:web:77af1c760ea1518dd39266"
+    };
 
-        document.getElementById('customerForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+    // Firebase'i başlat
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-            var customerName = document.getElementById('customerName').value;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
-            customers.push({ name: customerName });
-            localStorage.setItem('ayz_plastik_customers', JSON.stringify(customers));
+    // Sidebar fonksiyonları
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+    window.openNav = openNav;
+    window.closeNav = closeNav;
 
-            document.getElementById('customerForm').reset();
-        });
-    </script>
+    // Müşteri ekleme işlemi: Firestore'a kaydet
+    document.getElementById('customerForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const customerName = document.getElementById('customerName').value;
+
+      try {
+        // "customers" koleksiyonuna belge ekle
+        await addDoc(collection(db, "customers"), { name: customerName });
+        alert("Müşteri başarıyla kaydedildi!");
+        document.getElementById('customerForm').reset();
+      } catch (error) {
+        console.error("Müşteri kaydedilemedi: ", error);
+        alert("Müşteri kaydedilemedi. Hata: " + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

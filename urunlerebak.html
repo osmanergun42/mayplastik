@@ -1,226 +1,198 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ürünler</title>
-    <link rel="apple-touch-icon" href="urunler.png">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .container {
-            padding: 20px;
-            margin-top: 20px;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            width: 80%;
-            margin: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background: #444;
-            color: white;
-            font-weight: bold;
-        }
-        td {
-            background: #f9f9f9;
-        }
-        .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-            padding: 6px 12px;
-            margin-left: 5px;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .edit-btn {
-            background: #4CAF50;
-            color: white;
-        }
-        .delete-btn {
-            background: #f44336;
-            color: white;
-        }
-        .save-btn {
-            background: #008CBA;
-            color: white;
-        }
-        .cancel-btn {
-            background: #f44336;
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ürünler</title>
+  <link rel="apple-touch-icon" href="urunler.png" />
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+      margin-top: 20px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 90%;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #444;
+      color: white;
+      font-weight: bold;
+    }
+
+    td {
+      background: #f9f9f9;
+    }
+
+    .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+      padding: 6px 12px;
+      margin-left: 5px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .edit-btn {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #f44336;
+      color: white;
+    }
+
+    .save-btn {
+      background: #008CBA;
+      color: white;
+    }
+
+    .cancel-btn {
+      background: #f44336;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Ürünler</h1>
-        <table id="productsTable">
-            <thead>
-                <tr>
-                    <th>Ürün Adı</th>
-                    <th>Boyut</th>
-                    <th>Ağırlık (kg)</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Ürünler burada görünecek -->
-            </tbody>
-        </table>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-            var productsTable = document.getElementById('productsTable').getElementsByTagName('tbody')[0];
+  <div class="container">
+    <h1>Ürünler</h1>
+    <table id="productsTable">
+      <thead>
+        <tr>
+          <th>Ürün Adı</th>
+          <th>Boyut</th>
+          <th>Ağırlık (kg)</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-            function loadProducts() {
-                productsTable.innerHTML = '';
-                products.forEach(function(product, index) {
-                    var row = productsTable.insertRow();
-                    row.innerHTML = `
-                        <td>${product.name}</td>
-                        <td>${product.size}</td>
-                        <td>${product.weight}</td>
-                        <td>
-                            <button class="edit-btn" onclick="editProduct(${index})">Düzenle</button>
-                            <button class="delete-btn" onclick="deleteProduct(${index})">Sil</button>
-                        </td>
-                    `;
-                });
-            }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      updateDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-            window.editProduct = function(index) {
-                var row = productsTable.rows[index];
-                var product = products[index];
-                row.innerHTML = `
-                    <td><input type="text" id="editName${index}" value="${product.name}"></td>
-                    <td><input type="text" id="editSize${index}" value="${product.size}"></td>
-                    <td><input type="number" id="editWeight${index}" value="${product.weight}"></td>
-                    <td>
-                        <button class="save-btn" onclick="saveProduct(${index})">Kaydet</button>
-                        <button class="cancel-btn" onclick="loadProducts()">İptal</button>
-                    </td>
-                `;
-            };
-
-            window.saveProduct = function(index) {
-    var editedName = document.getElementById(`editName${index}`).value;
-    var editedSize = document.getElementById(`editSize${index}`).value;
-    var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
-    var oldName = products[index].name;
-
-    products[index] = {
-        name: editedName,
-        size: editedSize,
-        weight: editedWeight
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlaY1DIt97bCTcv2XK_Zqqp2LgAEzvlYI",
+      authDomain: "may-plastik-siparis.firebaseapp.com",
+      projectId: "may-plastik-siparis",
+      storageBucket: "may-plastik-siparis.appspot.com",
+      messagingSenderId: "550900866963",
+      appId: "1:550900866963:web:77af1c760ea1518dd39266"
     };
-    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
 
-    // Siparişlerde de güncelle
-    updateOrders(oldName, editedName, editedWeight);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const tableBody = document.querySelector("#productsTable tbody");
+
+    let products = [];
+
+    async function loadProducts() {
+      const snapshot = await getDocs(collection(db, "products"));
+      products = [];
+      tableBody.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        products.push({ id: docSnap.id, ...data });
+      });
+
+      renderTable();
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+      products.forEach((product, index) => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+          <td>${product.name}</td>
+          <td>${product.size}</td>
+          <td>${product.weight}</td>
+          <td>
+            <button class="edit-btn" onclick="editProduct(${index})">Düzenle</button>
+            <button class="delete-btn" onclick="deleteProduct(${index})">Sil</button>
+          </td>
+        `;
+      });
+    }
+
+    window.editProduct = function(index) {
+      const product = products[index];
+      const row = tableBody.rows[index];
+      row.innerHTML = `
+        <td><input type="text" id="editName${index}" value="${product.name}"></td>
+        <td><input type="text" id="editSize${index}" value="${product.size}"></td>
+        <td><input type="number" id="editWeight${index}" value="${product.weight}"></td>
+        <td>
+          <button class="save-btn" onclick="saveProduct(${index})">Kaydet</button>
+          <button class="cancel-btn" onclick="renderTable()">İptal</button>
+        </td>
+      `;
+    };
+
+    window.saveProduct = async function(index) {
+      const product = products[index];
+      const newName = document.getElementById(`editName${index}`).value;
+      const newSize = document.getElementById(`editSize${index}`).value;
+      const newWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
+
+      const ref = doc(db, "products", product.id);
+      await updateDoc(ref, {
+        name: newName,
+        size: newSize,
+        weight: newWeight
+      });
+
+      products[index].name = newName;
+      products[index].size = newSize;
+      products[index].weight = newWeight;
+
+      renderTable();
+    };
+
+    window.deleteProduct = async function(index) {
+      const confirmDelete = confirm("Bu ürünü silmek istediğinize emin misiniz?");
+      if (!confirmDelete) return;
+
+      const product = products[index];
+      await deleteDoc(doc(db, "products", product.id));
+      products.splice(index, 1);
+      renderTable();
+    };
 
     loadProducts();
-};
-
-function updateOrders(oldName, newName, newWeight) {
-    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    orders.forEach(function(order) {
-        if (order.product === oldName) {
-            order.product = newName; // Ürün adını güncelle
-            order.totalWeight = order.quantity * newWeight; // Yeni ağırlık ile güncelle
-        }
-    });
-    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-}
-
-            window.deleteProduct = function(index) {
-                if (confirm("Bu ürünü silmek istediğinizden emin misiniz?")) {
-                    var deletedProduct = products.splice(index, 1)[0];
-                    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
-
-                    // Siparişlerden de sil
-                    removeProductFromOrders(deletedProduct.name);
-
-                    loadProducts();
-                }
-            };
-
-            function updateOrders(oldName, newName, newWeight) {
-                var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-                orders.forEach(function(order) {
-                    if (order.product === oldName) {
-                        order.product = newName;
-                        order.totalWeight = order.quantity * newWeight;
-                    }
-                });
-                localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-            }
-            function recalculateOrderWeights() {
-    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-
-    orders.forEach(function(order) {
-        var product = products.find(p => `${p.name} (${p.size})` === order.product);
-        if (product) {
-            order.totalWeight = order.quantity * product.weight;
-        }
-    });
-
-    localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-}
-
-// saveProduct içinde çağır
-window.saveProduct = function(index) {
-    var editedName = document.getElementById(`editName${index}`).value;
-    var editedSize = document.getElementById(`editSize${index}`).value;
-    var editedWeight = parseFloat(document.getElementById(`editWeight${index}`).value);
-    var oldName = products[index].name;
-
-    products[index] = {
-        name: editedName,
-        size: editedSize,
-        weight: editedWeight
-    };
-    localStorage.setItem('ayz_plastik_products', JSON.stringify(products));
-
-    // Siparişlerde de güncelle
-    updateOrders(oldName, editedName, editedWeight);
-
-    // Siparişlerdeki ağırlıkları yeniden hesapla
-    recalculateOrderWeights();
-
-    loadProducts();
-};
-
-
-            function removeProductFromOrders(productName) {
-                var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-                var updatedOrders = orders.filter(function(order) {
-                    return order.product !== productName;
-                });
-                localStorage.setItem('ayz_plastik_orders', JSON.stringify(updatedOrders));
-            }
-
-            loadProducts();
-        });
-    </script>
+  </script>
 </body>
 </html>

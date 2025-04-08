@@ -1,574 +1,91 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAY Plastik Sipariş Listesi</title>
-    <style>
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-.sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    background-color: #333;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    z-index: 1;
-}
-.sidebar a {
-    padding: 15px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    color: #fff;
-    display: block;
-    transition: 0.3s;
-}
-.sidebar a:hover {
-    background: #555;
-}
-.sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background: #444;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
-    border-radius: 4px;
-}
-.openbtn:hover {
-    background: #555;
-}
-#main {
-    transition: margin-left 0.5s;
-    padding: 20px;
-    width: 100%;
-}
-header {
-    background: #444;
-    color: #fff;
-    padding: 20px 0;
-    border-bottom: #222 3px solid;
-    text-align: center;
-}
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-form {
-    background: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-form div {
-    margin-bottom: 15px;
-}
-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #444;
-}
-form input[type="text"], form input[type="number"], form select, form input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s;
-}
-form input[type="text"]:focus, form input[type="number"]:focus, form select:focus, form input[type="date"]:focus {
-    border-color: #444;
-    outline: none;
-}
-form button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-form button:hover {
-    background: #555;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-table, th, td {
-    border: 1px solid #ddd;
-}
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-th {
-    background: #444;
-    color: white;
-    font-weight: bold;
-}
-td {
-    background: #f9f9f9;
-}
-.add-product, .add-customer {
-    display: block;
-    width: calc(50% - 20px);
-    padding: 15px;
-    background: #444;
-    color: #fff;
-    border: none;
-    text-align: center;
-    margin: 20px 10px 0 10px;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-.add-product:hover, .add-customer:hover {
-    background: #555;
-}
-.product-list {
-    margin-top: 20px;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-.select-btn, .delete-btn, .copy-btn {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 5px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-.select-btn:hover, .delete-btn:hover, .copy-btn:hover {
-    background: #555;
-}
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 3;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding-top: 60px;
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-}
-.modal-header h2 {
-    margin: 0;
-}
-.close {
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-}
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-}
-.modal-footer button {
-    margin-left: 10px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAY Plastik Sipariş Listesi</title>
+  <link rel="stylesheet" href="liste.css"/>
 
-/* Mobil uyumluluk için medya sorguları */
-@media (max-width: 768px) {
-    form {
-        padding: 10px;
-    }
-    table, th, td {
-        padding: 8px;
-    }
-    .select-btn, .delete-btn, .copy-btn {
-        display: block;
-        width: calc(33.33% - 10px);
-        margin: 5px auto;
-    }
-    .openbtn {
-        padding: 8px 10px;
-        font-size: 18px;
-    }
-    header h1 {
-        font-size: 24px;
-    }
-}
-    </style>
+  <!-- Select2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <header>
-        <h1>MAY Plastik Sipariş Listesi</h1>
-    </header>
-    <div class="container">
-        <form class="filter-form" id="filterForm">
-            <div>
-                <label for="customerName">Müşteri Adı</label>
-                <select id="customerName">
-                    <option value="">Hepsi</option>
-                    <!-- Müşteriler burada dropdown menüde görünecek -->
-                </select>
-            </div>
-            <div>
-                <label for="productName">Ürün Adı</label>
-                <select id="productName">
-                    <option value="">Hepsi</option>
-                    <!-- Ürünler burada dropdown menüde görünecek -->
-                </select>
-            </div>
-            <div>
-                <label for="orderDate">Sipariş Tarihi</label>
-                <input type="date" id="orderDate">
-            </div>
-            <button type="button" onclick="filterOrders()">Filtrele</button>
-        </form>
-        <table id="ordersTable">
-            <thead>
-                <tr>
-                    <th>Müşteri Adı</th>
-                    <th>Ürün</th>
-                    <th>Miktar</th>
-                    <th>Toplam Ağırlık (kg)</th>
-                    <th>Sipariş Tarihi</th>
-                    <th>Seç</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Siparişler burada görünecek -->
-            </tbody>
-        </table>
-        <button class="delete-btn" onclick="openModal()">Seçili Siparişleri Sil</button>
-        <button class="copy-btn" onclick="copySelectedOrders()">Seçili Siparişleri Kopyala</button>
-        <button class="copy-btn" onclick="downloadSelectedOrdersAsPDF()">Seçili Siparişleri PDF Olarak İndir</button>
+  <header>
+    <h1>MAY Plastik Sipariş Listesi</h1>
+  </header>
+  <div class="container">
+    <form class="filter-form" id="filterForm">
+      <div>
+        <label for="customerName">Müşteri Adı</label>
+        <select id="customerName" style="width: 100%">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+      <div>
+        <label for="productName">Ürün Adı</label>
+        <select id="productName" style="width: 100%">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+      <div>
+        <label for="orderDate">Sipariş Tarihi</label>
+        <input type="date" id="orderDate"/>
+      </div>
+      <button type="button" onclick="filterOrders()">Filtrele</button>
+    </form>
 
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>Müşteri Adı</th>
+          <th>Ürün</th>
+          <th>Miktar</th>
+          <th>Toplam Ağırlık (kg)</th>
+          <th>Sipariş Tarihi</th>
+          <th>Seç</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button class="delete-btn" onclick="openModal()">Seçili Siparişleri Sil</button>
+    <button class="copy-btn" onclick="copySelectedOrders()">Seçili Siparişleri Kopyala</button>
+    <button class="copy-btn" onclick="downloadSelectedOrdersAsPDF()">Seçili Siparişleri PDF Olarak İndir</button>
+  </div>
+
+  <!-- Silme Modalı -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Onay</h2>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Seçili siparişleri silmek istediğinize emin misiniz?</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeModal()">İptal</button>
+        <button onclick="deleteSelectedOrders()">Sil</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Onay</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p>Seçili siparişleri silmek istediğinize emin misiniz?</p>
-            </div>
-            <div class="modal-footer">
-                <button onclick="closeModal()">İptal</button>
-                <button onclick="deleteSelectedOrders()">Sil</button>
-            </div>
-        </div>
-    </div>
+  <!-- Select2 JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <script>
-function loadOrders() {
-    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-    var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+  <!-- Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    ordersTable.innerHTML = '';
+  <!-- jsPDF ve autoTable UMD sürümleri -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-    orders.forEach(function(order, index) {
-        var product = products.find(p => p.name === order.product);
-        if (product) {
-            order.totalWeight = order.quantity * product.weight;
-        }
 
-        var newRow = ordersTable.insertRow();
-
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-        var cell4 = newRow.insertCell(3);
-        var cell5 = newRow.insertCell(4);
-        var cell6 = newRow.insertCell(5);
-
-        cell1.textContent = order.customerName;
-        cell2.textContent = order.product;
-        cell3.textContent = order.quantity;
-        cell4.textContent = order.totalWeight.toFixed(2);
-        cell5.textContent = order.date;
-
-        var selectCheckbox = document.createElement('input');
-        selectCheckbox.type = 'checkbox';
-        selectCheckbox.value = index;
-        cell6.appendChild(selectCheckbox);
-    });
-}
-        function generatePDF(order) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFontSize(14);
-            doc.text("MAY Plastik Sipariş Bilgisi", 20, 20);
-            doc.setFontSize(12);
-            doc.text(`Müsteri: ${order.customerName}`, 20, 40);
-            doc.text(`Urun: ${order.product}`, 20, 50);
-            doc.text(`Miktar: ${order.quantity}`, 20, 60);
-            doc.text(`Toplam Agirlik: ${order.totalWeight.toFixed(2)} kg`, 20, 70);
-            doc.text(`Siparis Tarihi: ${order.date}`, 20, 80);
-
-            const filename = `siparis_${order.customerName}_${order.date}.pdf`;
-            doc.save(filename);
-        }
-        function downloadSelectedOrdersAsPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    const ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-    const checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
-
-    if (checkboxes.length === 0) {
-        alert("Lutfen en az bir siparis secin.");
-        return;
-    }
-
-    function cleanText(text) {
-        return text
-            .replace(/ş/g, 's').replace(/Ş/g, 'S')
-            .replace(/ı/g, 'i').replace(/İ/g, 'I')
-            .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
-            .replace(/ü/g, 'u').replace(/Ü/g, 'U')
-            .replace(/ö/g, 'o').replace(/Ö/g, 'O')
-            .replace(/ç/g, 'c').replace(/Ç/g, 'C');
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("MAY Plastik - Secili Siparisler", 20, 20);
-
-    // Tablo başlıkları
-    const headers = ["Musteri", "Urun", "Miktar", "Agirlik (kg)", "Tarih"];
-    const colWidths = [40, 50, 20, 30, 40];
-    let startY = 30;
-
-    // Başlık çiz
-    doc.setFillColor(200, 200, 255);
-    doc.rect(15, startY, 180, 10, 'F');
-    doc.setTextColor(0);
-    doc.setFontSize(12);
-    let x = 17;
-    headers.forEach((h, i) => {
-        doc.text(h, x, startY + 7);
-        x += colWidths[i];
-    });
-
-    startY += 12;
-
-    // Siparişleri yazdır
-    checkboxes.forEach(function (checkbox) {
-        const order = orders[checkbox.value];
-        const row = [
-            cleanText(order.customerName),
-            cleanText(order.product),
-            order.quantity.toString(),
-            order.totalWeight.toFixed(2),
-            order.date
-        ];
-
-        x = 17;
-        row.forEach((val, i) => {
-            doc.text(val, x, startY + 6);
-            x += colWidths[i];
-        });
-
-        // Satır arka planı
-        doc.setDrawColor(220);
-        doc.rect(15, startY, 180, 10);
-
-        startY += 12;
-
-        if (startY > 270) {
-            doc.addPage();
-            startY = 20;
-        }
-    });
-
-    doc.save("secili_siparisler.pdf");
-}
-
-function filterOrders() {
-    var customerName = document.getElementById('customerName').value;
-    var productName = document.getElementById('productName').value;
-    var orderDate = document.getElementById('orderDate').value;
-
-    var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-    var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-    var filteredOrders = orders.filter(function(order) {
-        var isValid = true;
-        if (customerName && order.customerName !== customerName) {
-            isValid = false;
-        }
-        if (productName && order.product !== productName) {
-            isValid = false;
-        }
-        if (orderDate && order.date !== orderDate) {
-            isValid = false;
-        }
-        return isValid;
-    });
-
-    var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-    ordersTable.innerHTML = '';
-
-    filteredOrders.forEach(function(order, index) {
-        var product = products.find(p => p.name === order.product);
-        var totalWeight = product ? order.quantity * product.weight : order.totalWeight;
-
-        var newRow = ordersTable.insertRow();
-
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-        var cell4 = newRow.insertCell(3);
-        var cell5 = newRow.insertCell(4);
-        var cell6 = newRow.insertCell(5);
-
-        cell1.textContent = order.customerName;
-        cell2.textContent = order.product;
-        cell3.textContent = order.quantity;
-        cell4.textContent = totalWeight.toFixed(2);
-        cell5.textContent = order.date;
-
-        var selectCheckbox = document.createElement('input');
-        selectCheckbox.type = 'checkbox';
-        selectCheckbox.value = index;
-        cell6.appendChild(selectCheckbox);
-    });
-}
-
-        function loadCustomersAndProducts() {
-            var customers = JSON.parse(localStorage.getItem('ayz_plastik_customers')) || [];
-            var products = JSON.parse(localStorage.getItem('ayz_plastik_products')) || [];
-            var customerDropdown = document.getElementById('customerName');
-            var productDropdown = document.getElementById('productName');
-
-            customers.forEach(function(customer) {
-                var option = document.createElement('option');
-                option.value = customer.name;
-                option.textContent = customer.name;
-                customerDropdown.appendChild(option);
-            });
-
-            products.forEach(function(product) {
-                var option = document.createElement('option');
-                option.value = product.name;
-                option.textContent = product.name;
-                productDropdown.appendChild(option);
-            });
-        }
-
-        function openModal() {
-            var modal = document.getElementById('deleteModal');
-            modal.style.display = 'block';
-        }
-
-        function closeModal() {
-            var modal = document.getElementById('deleteModal');
-            modal.style.display = 'none';
-        }
-
-        function deleteSelectedOrders() {
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-            var checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
-
-            checkboxes.forEach(function(checkbox) {
-                orders.splice(checkbox.value, 1);
-            });
-
-            localStorage.setItem('ayz_plastik_orders', JSON.stringify(orders));
-            loadOrders();
-            closeModal();
-        }
-
-        function copySelectedOrders() {
-            var orders = JSON.parse(localStorage.getItem('ayz_plastik_orders')) || [];
-            var ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
-            var checkboxes = ordersTable.querySelectorAll('input[type="checkbox"]:checked');
-
-            var textToCopy = "";
-            checkboxes.forEach(function(checkbox) {
-                var order = orders[checkbox.value];
-                textToCopy += `${order.customerName}, ${order.product}, ${order.quantity}, ${order.totalWeight.toFixed(2)}, ${order.date}\n`;
-            });
-
-            navigator.clipboard.writeText(textToCopy).then(function() {
-                alert('Seçili siparişler kopyalandı.');
-            }, function(err) {
-                alert('Kopyalama başarısız oldu: ', err);
-            });
-        }
-
-        window.onload = function() {
-            loadOrders();
-            loadCustomersAndProducts();
-        };
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <!-- Uygulama Scripti -->
+  <script type="module" src="liste.js"></script>
 </body>
 </html>
