@@ -33,6 +33,17 @@
       </div>
       <button type="button" onclick="filterOrders()">Filtrele</button>
     </form>
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+      <label for="sortOption">Sırala:</label>
+      <select id="sortOption" onchange="sortOrders()" style="margin-left: 10px;">
+        <option value="">-- Seç --</option>
+        <option value="customerAZ">Müşteri A-Z</option>
+        <option value="customerZA">Müşteri Z-A</option>
+        <option value="dateNewest">Tarihe Göre (En Yeni)</option>
+        <option value="dateOldest">Tarihe Göre (En Eski)</option>
+      </select>
+    </div>
+    
 
     <table id="ordersTable">
       <thead>
