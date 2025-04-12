@@ -52,17 +52,30 @@ async function loadProducts() {
   });
 }
 
-// 🔄 Siparişleri Firestore'dan tabloya yükle
 async function loadOrders() {
   const ordersTable = document.getElementById("ordersTable").getElementsByTagName("tbody")[0];
   ordersTable.innerHTML = "";
 
   const snapshot = await getDocs(collection(db, "orders"));
+  const orders = [];
+
   snapshot.forEach((doc) => {
     const order = doc.data();
+    orders.push(order);
+  });
+
+  // 📌 1. Siparişleri tarihe göre azalan sırala
+  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // 📌 2. En son 10 tanesini al
+  const latest10Orders = orders.slice(0, 10);
+
+  // 📌 3. Tabloya yaz
+  latest10Orders.forEach(order => {
     addOrderToTable(order);
   });
 }
+
 
 // 🧾 Siparişi tabloya yaz
 function addOrderToTable(order) {
