@@ -4,7 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>İstatistikler</title>
+  <!-- ✅ jQuery CDN (Select2'dan önce gelmeli) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- ✅ Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- ✅ Select2 CSS + JS -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <!-- ✅ İstatistik JS -->
   <script type="module" src="istatistik.js"></script>
   <style>
   body {
@@ -13,26 +23,61 @@
     margin: 0;
     padding: 20px;
   }
-  
+
   h1 {
     text-align: center;
     margin-bottom: 30px;
     font-size: 28px;
     color: #333;
   }
-  
+
   .filter-box {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
     margin-bottom: 30px;
   }
-  
-  .filter-box select {
-    padding: 10px 15px;
+
+  .filter-box label {
+    font-weight: bold;
+    color: #333;
     font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
   }
-  
+
+  .filter-box select,
+  .filter-box input[type="date"] {
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+    outline: none;
+    min-width: 200px;
+  }
+
+  .filter-box select:focus,
+  .filter-box input[type="date"]:focus {
+    border-color: #444;
+  }
+
+  #resetFilters {
+    padding: 10px 18px;
+    font-size: 15px;
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #resetFilters:hover {
+    background-color: #c9302c;
+  }
+
   .charts-container {
     display: flex;
     flex-wrap: wrap;
@@ -40,7 +85,7 @@
     gap: 30px;
     margin-top: 20px;
   }
-  
+
   .chart-box {
     flex: 1 1 45%;
     min-width: 350px;
@@ -53,58 +98,19 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   canvas {
     width: 100% !important;
     height: auto !important;
     max-height: 280px;
   }
-  .filter-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 30px;
-}
 
-.filter-box label {
-  font-weight: bold;
-  color: #333;
-  font-size: 16px;
-}
-
-.filter-box select,
-.filter-box input[type="date"] {
-  padding: 10px;
-  font-size: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  transition: border-color 0.3s ease;
-  outline: none;
-}
-
-.filter-box select:focus,
-.filter-box input[type="date"]:focus {
-  border-color: #444;
-}
-#resetFilters {
-  padding: 10px 18px;
-  font-size: 15px;
-  background-color: #d9534f;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-#resetFilters:hover {
-  background-color: #c9302c;
-}
-
-</style>
+  @media (max-width: 500px) {
+    .chart-box {
+      min-width: 100%;
+    }
+  }
+  </style>
 </head>
 <body>
   <h1>MAY Plastik İstatistikler</h1>
@@ -114,12 +120,17 @@
     <select id="customerFilter">
       <option value="">Tüm Müşteriler</option>
     </select>
+
     <label for="dateFilter">Tarih:</label>
     <input type="date" id="dateFilter">
+
+    <label for="productFilter">Ürün Seç:</label>
+    <select id="productFilter">
+      <option value="">Tüm Ürünler</option>
+    </select>
+
     <button id="resetFilters" type="button">Filtreyi Sıfırla</button>
   </div>
-  <div>
-    
 
   <div class="charts-container">
     <div class="chart-box">
