@@ -18,8 +18,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Filtre elementleri
 const customerSelect = document.getElementById("customerFilter");
 const dateInput = document.getElementById("dateFilter");
+const productSelect = document.getElementById("productFilter");
 
 let allOrders = [];
 
@@ -28,6 +30,7 @@ async function fetchOrders() {
   allOrders = [];
   snapshot.forEach(doc => allOrders.push(doc.data()));
   populateCustomerFilter();
+  populateProductFilter();
   drawCharts();
 }
 
@@ -40,6 +43,30 @@ function populateCustomerFilter() {
     opt.textContent = name;
     customerSelect.appendChild(opt);
   });
+
+  // Select2 uygula
+  $(customerSelect).select2({
+    placeholder: "Müşteri Seçiniz",
+    allowClear: true,
+    width: 'resolve'
+  });
+}
+
+function populateProductFilter() {
+  const products = [...new Set(allOrders.map(order => order.product))];
+  productSelect.innerHTML = `<option value="">Tüm Ürünler</option>`;
+  products.forEach(prod => {
+    const opt = document.createElement("option");
+    opt.value = prod;
+    opt.textContent = prod;
+    productSelect.appendChild(opt);
+  });
+
+  $(productSelect).select2({
+    placeholder: "Ürün Seçiniz",
+    allowClear: true,
+    width: 'resolve'
+  });
 }
 
 let ordersChart, weightChart;
@@ -47,14 +74,30 @@ let ordersChart, weightChart;
 function drawCharts() {
   const selectedCustomer = customerSelect.value;
   const selectedDate = dateInput.value;
+  const selectedProduct = productSelect.value;
+
+  const ordersCanvas = document.getElementById("ordersChart");
+  const weightCanvas = document.getElementById("weightChart");
+
+  if (!ordersCanvas || !weightCanvas) {
+    console.warn("Canvas bulunamadı.");
+    return;
+  }
+
+  const ordersCtx = ordersCanvas.getContext("2d");
+  const weightCtx = weightCanvas.getContext("2d");
 
   const filteredOrders = allOrders.filter(order => {
     const customerMatch = !selectedCustomer || order.customerName === selectedCustomer;
     const dateMatch = !selectedDate || order.date === selectedDate;
-    return customerMatch && dateMatch;
+    const productMatch = !selectedProduct || order.product === selectedProduct;
+    return customerMatch && dateMatch && productMatch;
   });
 
-  // Müşteriye Göre Sipariş Sayısı
+  if (ordersChart) ordersChart.destroy();
+  if (weightChart) weightChart.destroy();
+
+  // Müşteriye göre sipariş sayısı
   const customerCounts = {};
   filteredOrders.forEach(order => {
     customerCounts[order.customerName] = (customerCounts[order.customerName] || 0) + 1;
@@ -63,7 +106,39 @@ function drawCharts() {
   const customerLabels = Object.keys(customerCounts);
   const customerData = Object.values(customerCounts);
 
-  // Ürüne Göre Toplam Adet ve Ağırlık
+  ordersChart = new Chart(ordersCtx, {
+    type: "bar",
+    data: {
+      labels: customerLabels,
+      datasets: [{
+        label: "Sipariş Sayısı",
+        data: customerData,
+        backgroundColor: "rgba(54, 162, 235, 0.6)"
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          suggestedMax: 5
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "Müşteriye Göre Sipariş Sayısı"
+        },
+        tooltip: {
+          callbacks: {
+            label: context => ` ${context.parsed.y} sipariş`
+          }
+        }
+      }
+    }
+  });
+
+  // Ürüne göre toplam ağırlık
   const productDataMap = {};
   filteredOrders.forEach(order => {
     const quantity = parseInt(order.quantity);
@@ -82,38 +157,6 @@ function drawCharts() {
   );
   const productData = Object.values(productDataMap).map(p => p.kilo);
 
-  // Önceki grafikler varsa yok et
-  if (ordersChart) ordersChart.destroy();
-  if (weightChart) weightChart.destroy();
-
-  const ordersCtx = document.getElementById("ordersChart").getContext("2d");
-  ordersChart = new Chart(ordersCtx, {
-    type: "bar",
-    data: {
-      labels: customerLabels,
-      datasets: [{
-        label: "Sipariş Sayısı",
-        data: customerData,
-        backgroundColor: "rgba(54, 162, 235, 0.6)"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: "Müşteriye Göre Sipariş Sayısı"
-        },
-        tooltip: {
-          callbacks: {
-            label: context => ` ${context.parsed.y} sipariş`
-          }
-        }
-      }
-    }
-  });
-
-  const weightCtx = document.getElementById("weightChart").getContext("2d");
   weightChart = new Chart(weightCtx, {
     type: "pie",
     data: {
@@ -133,9 +176,8 @@ function drawCharts() {
         tooltip: {
           callbacks: {
             label: function(context) {
-              const label = context.label || "";
               const value = context.parsed;
-              return `${label} - ${value.toFixed(2)} kg`;
+              return `${context.label} - ${value.toFixed(2)} kg`;
             }
           }
         }
@@ -143,15 +185,19 @@ function drawCharts() {
     }
   });
 }
-document.getElementById("resetFilters").addEventListener("click", () => {
-    document.getElementById("customerFilter").value = "";
-    document.getElementById("dateFilter").value = "";
-    drawCharts(); // filtre temizlenince tüm veriler tekrar çizilir
-  });
-  
-// Filtreler değiştiğinde grafikleri yenile
-customerSelect.addEventListener("change", drawCharts);
+
+// 🔄 Tüm filtreleri CANLI hale getir
+$(customerSelect).on("change", drawCharts);
+$(productSelect).on("change", drawCharts);
 dateInput.addEventListener("change", drawCharts);
 
-// İlk veri yüklemesi
+// 🔁 Filtreleri sıfırla
+document.getElementById("resetFilters").addEventListener("click", () => {
+  $(customerSelect).val("").trigger("change");
+  $(productSelect).val("").trigger("change");
+  dateInput.value = "";
+  drawCharts();
+});
+
+// 🚀 Veri yükle
 fetchOrders();
